@@ -48,6 +48,8 @@
             btnAddApp = new Button();
             txtNewApp = new TextBox();
             lblForbiddenApps = new Label();
+            chkKeyModeration = new CheckBox();
+            chkAppModeration = new CheckBox();
             SuspendLayout();
             // 
             // btnSave
@@ -83,7 +85,7 @@
             // chkModeration
             // 
             chkModeration.AutoSize = true;
-            chkModeration.Location = new Point(26, 31);
+            chkModeration.Location = new Point(26, 106);
             chkModeration.Name = "chkModeration";
             chkModeration.Size = new Size(126, 19);
             chkModeration.TabIndex = 3;
@@ -94,12 +96,13 @@
             // chkReports
             // 
             chkReports.AutoSize = true;
-            chkReports.Location = new Point(26, 106);
+            chkReports.Location = new Point(26, 31);
             chkReports.Name = "chkReports";
             chkReports.Size = new Size(104, 19);
             chkReports.TabIndex = 4;
             chkReports.Text = "Enable Reports";
             chkReports.UseVisualStyleBackColor = true;
+            chkReports.CheckedChanged += chkReports_CheckedChanged;
             // 
             // chkKeyRecording
             // 
@@ -153,7 +156,7 @@
             // lblForbiddenWords
             // 
             lblForbiddenWords.AutoSize = true;
-            lblForbiddenWords.Location = new Point(26, 146);
+            lblForbiddenWords.Location = new Point(26, 193);
             lblForbiddenWords.Name = "lblForbiddenWords";
             lblForbiddenWords.Size = new Size(65, 15);
             lblForbiddenWords.TabIndex = 10;
@@ -161,14 +164,14 @@
             // 
             // txtNewWord
             // 
-            txtNewWord.Location = new Point(26, 174);
+            txtNewWord.Location = new Point(26, 211);
             txtNewWord.Name = "txtNewWord";
             txtNewWord.Size = new Size(309, 23);
             txtNewWord.TabIndex = 11;
             // 
             // btnAddWord
             // 
-            btnAddWord.Location = new Point(26, 203);
+            btnAddWord.Location = new Point(26, 240);
             btnAddWord.Name = "btnAddWord";
             btnAddWord.Size = new Size(146, 23);
             btnAddWord.TabIndex = 14;
@@ -178,7 +181,7 @@
             // 
             // btnRemoveWord
             // 
-            btnRemoveWord.Location = new Point(189, 203);
+            btnRemoveWord.Location = new Point(189, 240);
             btnRemoveWord.Name = "btnRemoveWord";
             btnRemoveWord.Size = new Size(146, 23);
             btnRemoveWord.TabIndex = 15;
@@ -190,23 +193,23 @@
             // 
             lstWords.FormattingEnabled = true;
             lstWords.ItemHeight = 15;
-            lstWords.Location = new Point(26, 245);
+            lstWords.Location = new Point(26, 276);
             lstWords.Name = "lstWords";
-            lstWords.Size = new Size(309, 109);
+            lstWords.Size = new Size(309, 79);
             lstWords.TabIndex = 16;
             // 
             // lstApps
             // 
             lstApps.FormattingEnabled = true;
             lstApps.ItemHeight = 15;
-            lstApps.Location = new Point(418, 245);
+            lstApps.Location = new Point(414, 269);
             lstApps.Name = "lstApps";
-            lstApps.Size = new Size(309, 109);
+            lstApps.Size = new Size(309, 79);
             lstApps.TabIndex = 21;
             // 
             // btnRemoveApp
             // 
-            btnRemoveApp.Location = new Point(581, 203);
+            btnRemoveApp.Location = new Point(577, 240);
             btnRemoveApp.Name = "btnRemoveApp";
             btnRemoveApp.Size = new Size(146, 23);
             btnRemoveApp.TabIndex = 20;
@@ -216,7 +219,7 @@
             // 
             // btnAddApp
             // 
-            btnAddApp.Location = new Point(418, 203);
+            btnAddApp.Location = new Point(414, 240);
             btnAddApp.Name = "btnAddApp";
             btnAddApp.Size = new Size(148, 23);
             btnAddApp.TabIndex = 19;
@@ -226,7 +229,7 @@
             // 
             // txtNewApp
             // 
-            txtNewApp.Location = new Point(418, 174);
+            txtNewApp.Location = new Point(414, 211);
             txtNewApp.Name = "txtNewApp";
             txtNewApp.Size = new Size(309, 23);
             txtNewApp.TabIndex = 18;
@@ -234,17 +237,41 @@
             // lblForbiddenApps
             // 
             lblForbiddenApps.AutoSize = true;
-            lblForbiddenApps.Location = new Point(418, 146);
+            lblForbiddenApps.Location = new Point(414, 193);
             lblForbiddenApps.Name = "lblForbiddenApps";
-            lblForbiddenApps.Size = new Size(65, 15);
+            lblForbiddenApps.Size = new Size(58, 15);
             lblForbiddenApps.TabIndex = 17;
-            lblForbiddenApps.Text = "Write word";
+            lblForbiddenApps.Text = "Write app";
+            // 
+            // chkKeyModeration
+            // 
+            chkKeyModeration.AutoSize = true;
+            chkKeyModeration.Location = new Point(50, 131);
+            chkKeyModeration.Name = "chkKeyModeration";
+            chkKeyModeration.Size = new Size(147, 19);
+            chkKeyModeration.TabIndex = 22;
+            chkKeyModeration.Text = "Enable key moderation";
+            chkKeyModeration.UseVisualStyleBackColor = true;
+            chkKeyModeration.Visible = false;
+            // 
+            // chkAppModeration
+            // 
+            chkAppModeration.AutoSize = true;
+            chkAppModeration.Location = new Point(50, 156);
+            chkAppModeration.Name = "chkAppModeration";
+            chkAppModeration.Size = new Size(149, 19);
+            chkAppModeration.TabIndex = 23;
+            chkAppModeration.Text = "Enable app moderation";
+            chkAppModeration.UseVisualStyleBackColor = true;
+            chkAppModeration.Visible = false;
             // 
             // SettingsForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(chkAppModeration);
+            Controls.Add(chkKeyModeration);
             Controls.Add(lstApps);
             Controls.Add(btnRemoveApp);
             Controls.Add(btnAddApp);
@@ -266,7 +293,7 @@
             Controls.Add(btnReset);
             Controls.Add(btnSave);
             Name = "SettingsForm";
-            Text = "SettingsForm";
+            Text = "Settings";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -303,5 +330,7 @@
         private Button btnAddApp;
         private TextBox txtNewApp;
         private Label lblForbiddenApps;
+        private CheckBox chkKeyModeration;
+        private CheckBox chkAppModeration;
     }
 }

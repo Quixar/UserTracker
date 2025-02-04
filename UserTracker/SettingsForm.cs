@@ -22,13 +22,15 @@ namespace UserTracker
             if (File.Exists(settingsPath))
             {
                 string[] settings = File.ReadAllLines(settingsPath);
-                if (settings.Length >= 5)
+                if (settings.Length >= 7)
                 {
                     chkReports.Checked = bool.Parse(settings[0]);
-                    chkModeration.Checked = bool.Parse(settings[1]);
+                    chkKeyRecording.Checked = bool.Parse(settings[1]);
                     chkAppRecording.Checked = bool.Parse(settings[2]);
-                    chkKeyRecording.Checked = bool.Parse(settings[3]);
-                    txtLogPath.Text = settings[4];
+                    chkModeration.Checked = bool.Parse(settings[3]);
+                    chkKeyModeration.Checked = bool.Parse(settings[4]);
+                    chkAppModeration.Checked = bool.Parse(settings[5]);
+                    txtLogPath.Text = settings[6];
                 }
             }
 
@@ -124,7 +126,7 @@ namespace UserTracker
 
             try
             {
-                File.WriteAllText(settingsPath, $"{chkReports.Checked}\n{chkModeration.Checked}\n{chkAppRecording.Checked}\n{chkKeyRecording.Checked}\n{txtLogPath.Text}");
+                File.WriteAllText(settingsPath, $"{chkReports.Checked}\n{chkKeyRecording.Checked}\n{chkAppRecording.Checked}\n{chkModeration.Checked}\n{chkKeyModeration.Checked}\n{chkAppModeration.Checked}\n{txtLogPath.Text}");
                 File.WriteAllLines(forbiddenWordsPath, lstWords.Items.Cast<string>());
                 File.WriteAllLines(forbiddenAppsPath, lstApps.Items.Cast<string>());
 
@@ -222,8 +224,8 @@ namespace UserTracker
         private void chkModeration_CheckedChanged(object sender, EventArgs e)
         {
             bool isChecked = chkModeration.Checked;
-            chkKeyRecording.Visible = isChecked;
-            chkAppRecording.Visible = isChecked;
+            chkKeyModeration.Visible = isChecked;
+            chkAppModeration.Visible = isChecked;
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -234,6 +236,13 @@ namespace UserTracker
         private void chkKeyRecording_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void chkReports_CheckedChanged(object sender, EventArgs e)
+        {
+            bool isChecked = chkReports.Checked;
+            chkKeyRecording.Visible = isChecked;
+            chkAppRecording.Visible = isChecked;
         }
     }
 }

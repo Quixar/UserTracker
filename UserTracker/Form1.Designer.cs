@@ -52,6 +52,7 @@
             btnModeration.TabIndex = 1;
             btnModeration.Text = "Moderation";
             btnModeration.UseVisualStyleBackColor = true;
+            btnModeration.Click += btnModeration_Click;
             // 
             // btnReports
             // 
@@ -82,7 +83,7 @@
             Controls.Add(btnModeration);
             Controls.Add(btnSettings);
             Name = "Form1";
-            Text = "Form1";
+            Text = "User Tracker";
             ResumeLayout(false);
             PerformLayout();
         }

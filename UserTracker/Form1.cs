@@ -14,5 +14,11 @@ namespace UserTracker
             settingsForm.ShowDialog();
             this.Show();
         }
+
+        private void btnModeration_Click(object sender, EventArgs e)
+        {
+            AppTracker.StartMonitoringAsync();
+            
+        }
     }
 }
