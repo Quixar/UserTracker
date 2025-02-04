@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace UserTracker
 {
     public class AppTracker
     {
-        private static string projectPath = Application.StartupPath;
+        private static string projectPath = AppDomain.CurrentDomain.BaseDirectory;
         private static string settingsPath = Path.Combine(projectPath, "settings.txt");
         private static string forbiddenAppsPath = Path.Combine(projectPath, "forbidden_apps.txt");
         private static string logFilePath;
@@ -19,15 +19,21 @@ namespace UserTracker
         private static bool isAppModerationEnable = false;
         private static string[] forbiddenApps = new string[0];
 
+        private static HashSet<string> loggedProcesses = new HashSet<string>();
+
         public static async Task StartMonitoringAsync()
         {
             LoadSettings();
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 while (true)
                 {
+                    File.WriteAllText(logFilePath, string.Empty);
                     MonitorProcesses();
+
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    loggedProcesses.Clear();
                 }
             });
         }
@@ -61,7 +67,11 @@ namespace UserTracker
 
                 if (isLoggingEnable && isAppLoggingEnable)
                 {
-                    LogProcess(processName);
+                    if (!loggedProcesses.Contains(processName))
+                    {
+                        LogProcess(processName);
+                        loggedProcesses.Add(processName);
+                    }
                 }
 
                 if (forbiddenApps.Contains(processName))
