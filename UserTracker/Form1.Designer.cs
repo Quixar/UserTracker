@@ -1,6 +1,6 @@
 ﻿namespace UserTracker
 {
-    partial class Form1
+    partial class UserTracker
     {
         /// <summary>
         ///  Required designer variable.
@@ -32,13 +32,14 @@
             btnModeration = new Button();
             btnReports = new Button();
             lblProgramName = new Label();
+            btnStopModeration = new Button();
             SuspendLayout();
             // 
             // btnSettings
             // 
-            btnSettings.Location = new Point(240, 95);
+            btnSettings.Location = new Point(272, 110);
             btnSettings.Name = "btnSettings";
-            btnSettings.Size = new Size(104, 56);
+            btnSettings.Size = new Size(97, 41);
             btnSettings.TabIndex = 0;
             btnSettings.Text = "Settings";
             btnSettings.UseVisualStyleBackColor = true;
@@ -46,9 +47,9 @@
             // 
             // btnModeration
             // 
-            btnModeration.Location = new Point(141, 95);
+            btnModeration.Location = new Point(104, 110);
             btnModeration.Name = "btnModeration";
-            btnModeration.Size = new Size(93, 56);
+            btnModeration.Size = new Size(78, 41);
             btnModeration.TabIndex = 1;
             btnModeration.Text = "Moderation";
             btnModeration.UseVisualStyleBackColor = true;
@@ -56,12 +57,13 @@
             // 
             // btnReports
             // 
-            btnReports.Location = new Point(46, 95);
+            btnReports.Location = new Point(27, 110);
             btnReports.Name = "btnReports";
-            btnReports.Size = new Size(89, 56);
+            btnReports.Size = new Size(71, 41);
             btnReports.TabIndex = 2;
             btnReports.Text = "Reports";
             btnReports.UseVisualStyleBackColor = true;
+            btnReports.Click += btnReports_Click;
             // 
             // lblProgramName
             // 
@@ -73,16 +75,27 @@
             lblProgramName.TabIndex = 3;
             lblProgramName.Text = "User Tracker";
             // 
-            // Form1
+            // btnStopModeration
+            // 
+            btnStopModeration.Location = new Point(188, 110);
+            btnStopModeration.Name = "btnStopModeration";
+            btnStopModeration.Size = new Size(78, 41);
+            btnStopModeration.TabIndex = 4;
+            btnStopModeration.Text = "Stop moderation";
+            btnStopModeration.UseVisualStyleBackColor = true;
+            btnStopModeration.Click += button1_Click;
+            // 
+            // UserTracker
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(381, 201);
+            Controls.Add(btnStopModeration);
             Controls.Add(lblProgramName);
             Controls.Add(btnReports);
             Controls.Add(btnModeration);
             Controls.Add(btnSettings);
-            Name = "Form1";
+            Name = "UserTracker";
             Text = "User Tracker";
             ResumeLayout(false);
             PerformLayout();
@@ -94,5 +107,6 @@
         private Button btnModeration;
         private Button btnReports;
         private Label lblProgramName;
+        private Button btnStopModeration;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,33 +10,44 @@ namespace UserTracker
 {
     public class AppTracker
     {
-        private static string projectPath = AppDomain.CurrentDomain.BaseDirectory;
+        private static string projectPath = Application.StartupPath;
         private static string settingsPath = Path.Combine(projectPath, "settings.txt");
         private static string forbiddenAppsPath = Path.Combine(projectPath, "forbidden_apps.txt");
         private static string logFilePath;
+        private static string closedAppsLogFilePath;
         private static bool isLoggingEnable = false;
         private static bool isModerationEnable = false;
         private static bool isAppLoggingEnable = false;
         private static bool isAppModerationEnable = false;
         private static string[] forbiddenApps = new string[0];
 
-        private static HashSet<string> loggedProcesses = new HashSet<string>();
+        private static ConcurrentDictionary<string, bool> loggedProcesses = new ConcurrentDictionary<string, bool>();
+        private static CancellationTokenSource cancellationTokenSource;
 
         public static async Task StartMonitoringAsync()
         {
             LoadSettings();
 
-            await Task.Run(async () =>
-            {
-                while (true)
-                {
-                    File.WriteAllText(logFilePath, string.Empty);
-                    MonitorProcesses();
+            File.WriteAllText(logFilePath, string.Empty);
+            File.WriteAllText(closedAppsLogFilePath, string.Empty);
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    loggedProcesses.Clear();
-                }
-            });
+            cancellationTokenSource = new CancellationTokenSource();
+            var token = cancellationTokenSource.Token;
+
+            await Task.WhenAll(
+                Task.Run(async () => await MonitorProcessesAsync(token), token),
+                Task.Run(async () => await MonitorForbiddenAppsAsync(token), token)
+            );
+        }
+
+        public static void StopMonitoring()
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+            }
         }
 
         private static void LoadSettings()
@@ -50,6 +62,7 @@ namespace UserTracker
                     isModerationEnable = bool.Parse(settings[3]);
                     isAppModerationEnable = bool.Parse(settings[5]);
                     logFilePath = Path.Combine(settings[6], "app_activity.txt");
+                    closedAppsLogFilePath = Path.Combine(settings[6], "closed_apps.txt");
                 }
             }
 
@@ -59,43 +72,69 @@ namespace UserTracker
             }
         }
 
-        private static void MonitorProcesses()
+        private static async Task MonitorProcessesAsync(CancellationToken token)
         {
-            foreach (var process in Process.GetProcesses())
+            while (!token.IsCancellationRequested)
             {
-                string processName = process.ProcessName;
-
-                if (isLoggingEnable && isAppLoggingEnable)
+                foreach (var process in Process.GetProcesses())
                 {
-                    if (!loggedProcesses.Contains(processName))
+                    try
                     {
-                        LogProcess(processName);
-                        loggedProcesses.Add(processName);
+                        string processName = process.ProcessName;
+
+                        if (isLoggingEnable && isAppLoggingEnable)
+                        {
+                            if (loggedProcesses.TryAdd(processName, true))
+                            {
+                                LogProcess(logFilePath, processName);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogProcess(logFilePath, $"Ошибка доступа к процессу: {ex.Message}");
                     }
                 }
 
-                if (forbiddenApps.Contains(processName))
-                {
-                    if (isModerationEnable && isAppModerationEnable)
-                    {
-                        try
-                        {
-                            process.Kill();
-                            LogProcess($"Closed forbidden app: {processName} {DateTime.Now}");
-                        }
-                        catch (Exception ex)
-                        {
-                            LogProcess($"Failed to close {processName}: {ex.Message}");
-                        }
-                    }
-                }
+                await Task.Delay(TimeSpan.FromSeconds(5), token);
             }
         }
 
-        private static void LogProcess(string process)
+        private static async Task MonitorForbiddenAppsAsync(CancellationToken token)
         {
-            string log = $"{DateTime.Now}: {process}";
-            File.AppendAllText(logFilePath, log + "\n");
+            while (!token.IsCancellationRequested)
+            {
+                var processes = Process.GetProcesses();
+
+                Parallel.ForEach(processes, process =>
+                {
+                    string processName = process.ProcessName;
+
+                    if (forbiddenApps.Contains(processName))
+                    {
+                        if (isModerationEnable && isAppModerationEnable)
+                        {
+                            try
+                            {
+                                process.Kill();
+                                LogProcess(closedAppsLogFilePath, $"Closed forbidden app: {processName}");
+                            }
+                            catch (Exception ex)
+                            {
+                                LogProcess(closedAppsLogFilePath, $"Failed to close {processName}: {ex.Message}");
+                            }
+                        }
+                    }
+                });
+
+                await Task.Delay(TimeSpan.FromMilliseconds(100), token);
+            }
+        }
+
+        private static void LogProcess(string filePath, string message)
+        {
+            string log = $"{DateTime.Now}: {message}";
+            File.AppendAllText(filePath, log + Environment.NewLine);
         }
     }
 }
