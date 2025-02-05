@@ -83,7 +83,7 @@
             btnStopModeration.TabIndex = 4;
             btnStopModeration.Text = "Stop moderation";
             btnStopModeration.UseVisualStyleBackColor = true;
-            btnStopModeration.Click += button1_Click;
+            btnStopModeration.Click += btnStopModeration_Click;
             // 
             // UserTracker
             // 

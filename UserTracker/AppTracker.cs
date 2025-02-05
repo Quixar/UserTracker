@@ -92,7 +92,7 @@ namespace UserTracker
                     }
                     catch (Exception ex)
                     {
-                        LogProcess(logFilePath, $"Ошибка доступа к процессу: {ex.Message}");
+                        LogProcess(logFilePath, $"Process access error: {ex.Message}");
                     }
                 }
 
@@ -134,7 +134,7 @@ namespace UserTracker
         private static void LogProcess(string filePath, string message)
         {
             string log = $"{DateTime.Now}: {message}";
-            File.AppendAllText(filePath, log + Environment.NewLine);
+            File.AppendAllTextAsync(filePath, log + Environment.NewLine);
         }
     }
 }
