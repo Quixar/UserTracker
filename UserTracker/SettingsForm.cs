@@ -244,5 +244,6 @@ namespace UserTracker
             chkKeyRecording.Visible = isChecked;
             chkAppRecording.Visible = isChecked;
         }
+
     }
 }

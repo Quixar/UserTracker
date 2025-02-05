@@ -32,29 +32,10 @@ namespace UserTracker
 
         private void btnReports_Click(object sender, EventArgs e)
         {
-            string folderPath = GetUserFolderPath();
-            if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
-            {
-                Process.Start("explorer.exe", folderPath);
-            }
-            else
-            {
-                MessageBox.Show("The specified folder was not found. Check your settings.");
-            }
+            ReportForm reportForm = new ReportForm();
+            this.Hide();
+            reportForm.ShowDialog();
+            this.Show();
         }
-
-        private string GetUserFolderPath()
-        {
-            if (File.Exists(settingsPath))
-            {
-                string[] settings = File.ReadAllLines(settingsPath);
-                if (settings.Length >= 7)
-                {
-                    return settings[6];
-                }
-            }
-            return string.Empty;
-        }
-
     }
 }
