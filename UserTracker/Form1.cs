@@ -21,7 +21,6 @@ namespace UserTracker
         private void btnModeration_Click(object sender, EventArgs e)
         {
             AppTracker.StartMonitoringAsync();
-
         }
 
         private void button1_Click(object sender, EventArgs e)
